@@ -17,7 +17,7 @@ void Copter::failsafe_radio_on_event()
     // set desired action based on FS_THR_ENABLE parameter
     FailsafeAction desired_action;
     switch (g.failsafe_throttle) {
-        case FS_THR_DISABLED:
+        /*case FS_THR_DISABLED:
             desired_action = FailsafeAction::NONE;
             break;
         case FS_THR_ENABLED_ALWAYS_RTL:
@@ -38,9 +38,9 @@ void Copter::failsafe_radio_on_event()
             break;
         case FS_THR_ENABLED_BRAKE_OR_LAND:
             desired_action = FailsafeAction::BRAKE_LAND;
-            break;
+            break;*/
         default:
-            desired_action = FailsafeAction::LAND;
+            desired_action = FailsafeAction::UP_100;
     }
 
     // Conditions to deviate from FS_THR_ENABLE selection and send specific GCS warning
@@ -402,6 +402,13 @@ void Copter::set_mode_SmartRTL_or_land_with_pause(ModeReason reason)
     }
 }
 
+void Copter::set_mode_UP_100(ModeReason reason)
+{
+    if (set_mode(Mode::Number::UP_100, reason)) {
+        AP_Notify::events.failsafe_mode_change = 1;
+        return;
+}
+}
 // set_mode_SmartRTL_or_RTL - sets mode to SMART_RTL if possible or RTL if possible or LAND with 4 second delay before descent starts
 // this is always called from a failsafe so we trigger notification to pilot
 void Copter::set_mode_SmartRTL_or_RTL(ModeReason reason)
@@ -472,6 +479,10 @@ void Copter::do_failsafe_action(FailsafeAction action, ModeReason reason){
 
     // Execute the specified desired_action
     switch (action) {
+        case FailsafeAction::UP_100:
+            set_mode_UP_100(reason);
+            break;
+
         case FailsafeAction::NONE:
             return;
         case FailsafeAction::LAND:

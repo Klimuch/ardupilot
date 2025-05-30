@@ -95,6 +95,7 @@ public:
         AUTOROTATE =   26,  // Autonomous autorotation
         AUTO_RTL =     27,  // Auto RTL, this is not a true mode, AUTO will report as this mode if entered to perform a DO_LAND_START Landing sequence
         TURTLE =       28,  // Flip over after crash
+        UP_100 =       29,
 
         // Mode number 127 reserved for the "drone show mode" in the Skybrush
         // fork at https://github.com/skybrush-io/ardupilot
@@ -424,6 +425,100 @@ private:
     bool disable_air_mode_reset;
 };
 #endif
+
+class ModeUP_100 : public Mode {
+
+public:
+    // inherit constructor
+    using Mode::Mode;
+    Number mode_number() const override { return Number::UP_100; }
+
+    bool init(bool ignore_checks) override;
+    void run() override;
+
+    bool requires_GPS() const override { return false; }
+    bool has_manual_throttle() const override { return false; }
+    bool allows_arming(AP_Arming::Method method) const override { return false; };
+    bool is_autopilot() const override { return true; }
+
+    bool is_landing() const override { return true; };
+
+    bool has_user_takeoff(bool must_navigate) const override {
+        return !must_navigate;
+    }
+    bool allows_autotune() const override { return true; }
+    bool allows_flip() const override { return true; }
+    bool allows_save_trim() const override { return true; }
+  
+    bool do_user_takeoff_start(float takeoff_alt_cm) override;
+
+    enum class SubMode {
+        TakeOff,
+        WP,
+        Pos,
+        PosVelAccel,
+        VelAccel,
+        Accel,
+        Angle,
+    };
+
+    SubMode submode() const { return guided_mode; }
+
+    void angle_control_start();
+    void angle_control_run();
+
+    // return guided mode timeout in milliseconds. Only used for velocity, acceleration, angle control, and angular rate control
+    uint32_t get_timeout_ms() const;
+
+    // pause continue in guided mode
+
+    void do_not_use_GPS();
+
+    // returns true if LAND mode is trying to control X/Y position
+    bool controlling_position() const { return control_position; }
+
+    void set_land_pause(bool new_value) { land_pause = new_value; }
+
+protected:
+
+    const char *name() const override { return "LAND"; }
+    const char *name4() const override { return "LAND"; }
+
+private:
+
+    static SubMode guided_mode;
+    static bool send_notification;     // used to send one time notification to ground station
+    static bool takeoff_complete;      // true once takeoff has completed (used to trigger retracting of landing gear)
+
+    // guided mode is paused or not
+    static bool _paused;
+    void takeoff_run();
+
+    void velaccel_control_run();
+    
+    float take_off_start_alt;
+    float last_altitube;
+
+    void pos_control_run();
+
+    void nogps_run();
+
+    void accel_control_run();
+    
+    void posvelaccel_control_run();
+
+    void ascent_run();
+    int32_t ascent_start_alt;
+
+    bool control_position; // true if we are using an external reference to control position
+
+    void wp_control_start();
+    void wp_control_run();
+
+    uint32_t land_start_time;
+    bool land_pause;
+};
+
 
 #if FRAME_CONFIG == HELI_FRAME
 class ModeAcro_Heli : public ModeAcro {
