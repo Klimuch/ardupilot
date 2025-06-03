@@ -5,7 +5,7 @@
  * Init and run calls for althold, flight mode
  */
 
-ModeUP_100::SubMode ModeUP_100::guided_mode = SubMode::TakeOff;
+ModeUP_100::SubMode_UP_100 ModeUP_100::althold_mode = SubMode_UP_100::TakeOff;
 bool ModeUP_100::takeoff_complete;
 
 // althold_init - initialise althold controller
@@ -44,8 +44,6 @@ bool ModeUP_100::do_user_takeoff_start(float takeoff_alt_cm)
         }
     }
 
-    guided_mode = SubMode::TakeOff;
-
     // initialise yaw
     auto_yaw.set_mode(AutoYaw::Mode::HOLD);
 
@@ -77,31 +75,5 @@ void ModeUP_100::takeoff_run()
 // should be called at 100hz or more
 void ModeUP_100::run()
 {
-    switch (guided_mode) {
-
-        case SubMode::TakeOff:
-            // run takeoff controller
-            takeoff_run();
-            break;
-    
-        case SubMode::WP:
-            // run waypoint controller
-            break;
-    
-        case SubMode::Pos:
-            // run position controller
-            break;
-    
-        case SubMode::Accel:
-            break;
-    
-        case SubMode::VelAccel:
-            break;
-    
-        case SubMode::PosVelAccel:
-            break;
-    
-        case SubMode::Angle:
-            break;
-        }
-    }
+    takeoff_run();
+}

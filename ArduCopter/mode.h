@@ -441,8 +441,6 @@ public:
     bool allows_arming(AP_Arming::Method method) const override { return false; };
     bool is_autopilot() const override { return true; }
 
-    bool is_landing() const override { return true; };
-
     bool has_user_takeoff(bool must_navigate) const override {
         return !must_navigate;
     }
@@ -452,17 +450,11 @@ public:
   
     bool do_user_takeoff_start(float takeoff_alt_cm) override;
 
-    enum class SubMode {
+    enum class SubMode_UP_100 {
         TakeOff,
-        WP,
-        Pos,
-        PosVelAccel,
-        VelAccel,
-        Accel,
-        Angle,
     };
 
-    SubMode submode() const { return guided_mode; }
+    SubMode_UP_100 submode_up_100() const { return althold_mode; }
 
     void angle_control_start();
     void angle_control_run();
@@ -472,8 +464,6 @@ public:
 
     // pause continue in guided mode
 
-    void do_not_use_GPS();
-
     // returns true if LAND mode is trying to control X/Y position
     bool controlling_position() const { return control_position; }
 
@@ -481,41 +471,26 @@ public:
 
 protected:
 
-    const char *name() const override { return "LAND"; }
-    const char *name4() const override { return "LAND"; }
+    const char *name() const override { return "UP_100"; }
+    const char *name4() const override { return "UP"; }
 
 private:
 
-    static SubMode guided_mode;
+    static SubMode_UP_100 althold_mode;
     static bool send_notification;     // used to send one time notification to ground station
     static bool takeoff_complete;      // true once takeoff has completed (used to trigger retracting of landing gear)
 
     // guided mode is paused or not
     static bool _paused;
     void takeoff_run();
-
-    void velaccel_control_run();
     
     float take_off_start_alt;
     float last_altitube;
 
     void pos_control_run();
 
-    void nogps_run();
-
-    void accel_control_run();
-    
-    void posvelaccel_control_run();
-
-    void ascent_run();
-    int32_t ascent_start_alt;
-
     bool control_position; // true if we are using an external reference to control position
 
-    void wp_control_start();
-    void wp_control_run();
-
-    uint32_t land_start_time;
     bool land_pause;
 };
 
