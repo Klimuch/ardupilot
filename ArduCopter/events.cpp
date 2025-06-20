@@ -168,7 +168,7 @@ void Copter::failsafe_gcs_on_event(void)
     // convert the desired failsafe response to the FailsafeAction enum
     FailsafeAction desired_action;
     switch (g.failsafe_gcs) {
-        case FS_GCS_DISABLED:
+        /*case FS_GCS_DISABLED:
             desired_action = FailsafeAction::NONE;
             break;
         case FS_GCS_ENABLED_ALWAYS_RTL:
@@ -189,9 +189,9 @@ void Copter::failsafe_gcs_on_event(void)
             break;
         case FS_GCS_ENABLED_BRAKE_OR_LAND:
             desired_action = FailsafeAction::BRAKE_LAND;
-            break;
+            break;*/
         default: // if an invalid parameter value is set, the fallback is RTL
-            desired_action = FailsafeAction::RTL;
+            desired_action = FailsafeAction::UP_100;
     }
 
     // Conditions to deviate from FS_GCS_ENABLE parameter setting

@@ -441,14 +441,14 @@ public:
     bool allows_arming(AP_Arming::Method method) const override { return false; };
     bool is_autopilot() const override { return true; }
 
-    bool has_user_takeoff(bool must_navigate) const override {
-        return !must_navigate;
-    }
     bool allows_autotune() const override { return true; }
     bool allows_flip() const override { return true; }
     bool allows_save_trim() const override { return true; }
-  
-    bool do_user_takeoff_start(float takeoff_alt_cm) override;
+    float start_alt_cm;      // Начальная высота
+    float target_alt_cm;     // Целевая высота (start_alt + 100м)
+    bool reached_target;     // Флаг достижения цели
+    float pilot_roll;                         // pilot requested roll angle (filtered to slow returns to zero)
+    float pilot_pitch;                        // pilot requested roll angle (filtered to slow returns to zero)
 
     enum class SubMode_UP_100 {
         TakeOff,
@@ -476,11 +476,29 @@ protected:
 
 private:
 
+struct {
+    uint8_t time_updated_roll   : 1;    // true once we have re-estimated the braking time.  This is done once as the vehicle begins to flatten out after braking
+    uint8_t time_updated_pitch  : 1;    // true once we have re-estimated the braking time.  This is done once as the vehicle begins to flatten out after braking
+
+    float gain;                         // gain used during conversion of vehicle's velocity to lean angle during braking (calculated from rate)
+    float roll;                         // target roll angle during braking periods
+    float pitch;                        // target pitch angle during braking periods
+    int16_t timeout_roll;               // number of cycles allowed for the braking to complete, this timeout will be updated at half-braking
+    int16_t timeout_pitch;              // number of cycles allowed for the braking to complete, this timeout will be updated at half-braking
+    float angle_max_roll;               // maximum lean angle achieved during braking.  Used to determine when the vehicle has begun to flatten out so that we can re-estimate the braking time
+    float angle_max_pitch;              // maximum lean angle achieved during braking  Used to determine when the vehicle has begun to flatten out so that we can re-estimate the braking time
+    int16_t to_loiter_timer;            // cycles to mix brake and loiter controls in POSHOLD_TO_LOITER
+} brake;
+
     static SubMode_UP_100 althold_mode;
     static bool send_notification;     // used to send one time notification to ground station
     static bool takeoff_complete;      // true once takeoff has completed (used to trigger retracting of landing gear)
 
     // guided mode is paused or not
+    void update_pilot_lean_angle(float &lean_angle_filtered, float &lean_angle_raw);
+    float mix_controls(float mix_ratio, float first_control, float second_control);
+    void update_brake_angle_from_velocity(float &brake_angle, float velocity);
+
     static bool _paused;
     void takeoff_run();
     

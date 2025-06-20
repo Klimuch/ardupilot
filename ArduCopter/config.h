@@ -644,3 +644,7 @@
 #ifndef USER_PARAMS_ENABLED
   #define USER_PARAMS_ENABLED DISABLED
 #endif
+
+#ifndef TARGET_ALT_METERS
+  #define TARGET_ALT_METERS      10.0
+#endif

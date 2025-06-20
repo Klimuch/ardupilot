@@ -251,6 +251,8 @@ public:
     /// set_pos_target_xy_cm - sets the position target, frame NEU in cm relative to the EKF origin
     void set_pos_target_xy_cm(float pos_x, float pos_y) { _pos_target.x = pos_x; _pos_target.y = pos_y; }
 
+    void climb_100_meters();
+
     /// get_pos_target_cm - returns the position target, frame NEU in cm relative to the EKF origin
     const Vector3p& get_pos_target_cm() const { return _pos_target; }
 
