@@ -28,6 +28,14 @@
 #endif
 
 const AP_Param::Info Copter::var_info[] = {
+
+    // @Param: MY_NEW_PARAMETER
+    // @DisplayName: My New Parameter
+    // @Description: A description of my new parameter goes here
+    // @Range: -32768 32767
+    // @User: Advanced
+    GSCALAR(up_mode_alt, "UP_MODE_ALT", UP_MODE_ALT_DEFAULT),
+
     // @Param: FORMAT_VERSION
     // @DisplayName: Eeprom format version number
     // @Description: This value is incremented when changes are made to the eeprom format
@@ -719,12 +727,6 @@ const AP_Param::Info Copter::var_info[] = {
     // @Path: ../libraries/AP_OSD/AP_OSD.cpp
     GOBJECT(osd, "OSD", AP_OSD),
 #endif
-    // @Param: MY_NEW_PARAMETER
-    // @DisplayName: My New Parameter
-    // @Description: A description of my new parameter goes here
-    // @Range: -32768 32767
-    // @User: Advanced
-    GSCALAR(target_alt_meters, "TARGET_ALT_METERS", TARGET_ALT_METERS),
 
 #if AC_CUSTOMCONTROL_MULTI_ENABLED == ENABLED
     // @Group: CC

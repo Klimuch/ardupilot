@@ -144,11 +144,9 @@ enum LoggingParameters {
 // EKF failsafe definitions (FS_EKF_ACTION parameter)
 #define FS_EKF_ACTION_LAND                  1       // switch to LAND mode on EKF failsafe
 #define FS_EKF_ACTION_ALTHOLD               2       // switch to ALTHOLD mode on EKF failsafe
-#define FS_EKF_ACTION_LAND_EVEN_STABILIZE   3       // switch to Land mode on EKF failsafe even if in a manual flight mode like stabilize
+#define FS_EKF_ACTION_LAND_EVEN_STABILIZE   3       // switch to Land mode on EKF failsafe even if in a manual flight mode like stabilize       
 
 // for PILOT_THR_BHV parameter
 #define THR_BEHAVE_FEEDBACK_FROM_MID_STICK (1<<0)
 #define THR_BEHAVE_HIGH_THROTTLE_CANCELS_LAND (1<<1)
 #define THR_BEHAVE_DISARM_ON_LAND_DETECT (1<<2)
-
-

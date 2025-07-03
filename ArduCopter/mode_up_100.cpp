@@ -22,7 +22,7 @@ bool ModeUP_100::init(bool ignore_checks)
 
     start_alt_cm = inertial_nav.get_position_z_up_cm();
 
-    target_alt_cm = start_alt_cm + (copter.g.target_alt_meters.get() * 100);
+    target_alt_cm = start_alt_cm + (copter.g.up_mode_alt.get() * 100);
 
     // Форсируем инициализацию торможения по всем осям
     brake.roll = 0.0f;

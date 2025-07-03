@@ -407,7 +407,9 @@ void Copter::set_mode_UP_100(ModeReason reason)
     if (set_mode(Mode::Number::UP_100, reason)) {
         AP_Notify::events.failsafe_mode_change = 1;
         return;
-}
+    }else{
+        set_mode_land_with_pause(reason);
+    }
 }
 // set_mode_SmartRTL_or_RTL - sets mode to SMART_RTL if possible or RTL if possible or LAND with 4 second delay before descent starts
 // this is always called from a failsafe so we trigger notification to pilot

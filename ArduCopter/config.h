@@ -645,6 +645,6 @@
   #define USER_PARAMS_ENABLED DISABLED
 #endif
 
-#ifndef TARGET_ALT_METERS
-  #define TARGET_ALT_METERS      10.0
+#ifndef UP_MODE_ALT_DEFAULT
+ # define UP_MODE_ALT_DEFAULT      100     // default value for my new parameter
 #endif
